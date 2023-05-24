@@ -11,7 +11,11 @@
     {% endfor %}
     </div>
     {% endif %}
-    <h2 class="border-bottom py-2">{{ question.subject }}</h2>
+    <h2 class="border-bottom py-2">{{ question.subject }}
+        {% if question.modify_count > 0 %}
+        <a class="border-bottom py-2" style="font-size:10pt; vertical-align:middle; color:red;">{{ question.modify_count }}</a>
+        {% endif %}
+    </h2>
     <div class="row my-3">
         <div class="col-1"> <!-- 추천영역 -->
             <div class="bg-light text-center p-3 border font-weight-bolder mb-1">{{question.voter.count}}</div>
@@ -104,6 +108,9 @@
                            class="btn btn-sm btn-outline-secondary">수정</a>
                         <a href="#" class="delete btn btn-sm btn-outline-secondary "
                            data-uri="{% url 'pybo:answer_delete' answer.id  %}">삭제</a>
+                           {% if answer.modify_count > 0 %}
+                           <a style="font-size:10pt; color:red; vertical-align:center;">{{answer.modify_count}}번 수정됨</a> 
+                           {% endif %}  
                     </div>
                     {% endif %}
                     {% if answer.comment_set.count > 0 %}
