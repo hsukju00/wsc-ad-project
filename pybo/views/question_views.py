@@ -18,6 +18,7 @@ def question_create(request):
             question = form.save(commit=False)
             question.author = request.user  # 추가한 속성 author 적용
             question.create_date = timezone.now()
+            question.modify_count = 0
             question.save()
             return redirect('pybo:index')
     else:
@@ -32,6 +33,10 @@ def question_modify(request, question_id):
     pybo 질문수정
     """
     question = get_object_or_404(Question, pk=question_id)
+    
+    cur_subject = question.subject
+    cur_content = question.content 
+    
     if request.user != question.author:
         messages.error(request, '수정권한이 없습니다')
         return redirect('pybo:detail', question_id=question.id)
@@ -42,6 +47,8 @@ def question_modify(request, question_id):
             question = form.save(commit=False)
             question.author = request.user
             question.modify_date = timezone.now()  # 수정일시 저장
+            if(cur_content != question.content or cur_subject != question.subject):
+                question.modify_count += 1
             question.save()
             return redirect('pybo:detail', question_id=question.id)
     else:
