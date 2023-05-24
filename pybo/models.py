@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class Question(models.Model):
@@ -31,3 +32,11 @@ class Comment(models.Model):
     question = models.ForeignKey(Question, null=True, blank=True, on_delete=models.CASCADE)
     answer = models.ForeignKey(Answer, null=True, blank=True, on_delete=models.CASCADE)
     modify_count = models.IntegerField()
+    voter = models.ManyToManyField(User, related_name='voter_comment')
+
+    def has_voter_by_user_id(self, user_id):
+        try:
+            self.voter.get(pk=user_id)
+            return True
+        except ObjectDoesNotExist:
+            return False

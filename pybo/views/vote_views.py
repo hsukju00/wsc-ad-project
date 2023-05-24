@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect
 
-from ..models import Question, Answer
+from ..models import Question, Answer, Comment
 
 
 @login_required(login_url='common:login')
@@ -29,3 +29,27 @@ def vote_answer(request, answer_id):
     else:
         answer.voter.add(request.user)
     return redirect('pybo:detail', question_id=answer.question.id)
+
+
+@login_required(login_url='common:login')
+def vote_question_comment(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+    if request.user == comment.author:
+        messages.error(request, '본인이 작성한 댓글은 추천할 수 없습니다.')
+    elif comment.has_voter_by_user_id(request.user.id):
+        messages.error(request, "이미 추천한 댓글은 추천할 수 없습니다.")
+    else:
+        comment.voter.add(request.user)
+    return redirect('pybo:detail', question_id=comment.question.id)
+
+
+@login_required(login_url='common:login')
+def vote_answer_comment(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+    if request.user == comment.author:
+        messages.error(request, '본인이 작성한 댓글은 추천할 수 없습니다.')
+    elif comment.has_voter_by_user_id(request.user.id):
+        messages.error(request, "이미 추천한 댓글은 추천할 수 없습니다.")
+    else:
+        comment.voter.add(request.user)
+    return redirect('pybo:detail', question_id=comment.answer.question.id)
