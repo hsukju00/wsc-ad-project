@@ -56,6 +56,9 @@
                                 {% endif %}
                             </span>
                             {% if request.user == comment.author %}
+                            {% if comment.modify_count > 0 %}
+                            <a class="small">({{ comment.modify_count }}회 수정됨)</a>
+                            {% endif %}
                             <a href="{% url 'pybo:comment_modify_question' comment.id  %}" class="small">수정</a>,
                             <a href="#" class="small delete"
                                data-uri="{% url 'pybo:comment_delete_question' comment.id  %}">삭제</a>
@@ -119,6 +122,9 @@
                                 {% endif %}
                             </span>
                             {% if request.user == comment.author %}
+                            {% if comment.modify_count > 0 %}
+                            <a class="small">({{ comment.modify_count }}회 수정됨)</a>
+                            {% endif %}
                             <a href="{% url 'pybo:comment_modify_answer' comment.id  %}" class="small">수정</a>,
                             <a href="#" class="small delete"
                                data-uri="{% url 'pybo:comment_delete_answer' comment.id  %}">삭제</a>
