@@ -43,6 +43,13 @@ def detail(request, question_id):
     """
     pybo 내용 출력
     """
+
     question = get_object_or_404(Question, pk=question_id)
-    context = {'question': question}
-    return render(request, 'pybo/question_detail.html', context)
+    paginator = Paginator(question.comment_set.annotate(num_voter=Count('voter')).order_by("-num_voter").order_by("-create_date"), 5)
+    page_number = request.GET.get("page", 1)
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'pybo/question_detail.html',
+        {
+            "question": question,
+            "comment_page_obj": page_obj
+        })
